@@ -12,6 +12,8 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      VITE_API_BASE_URL: https://aicontentdashboar-backend-production.up.railway.app/api
 
     steps:
       - name: Checkout
