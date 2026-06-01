@@ -7,7 +7,7 @@ import { PromptSettingsPage } from "./features/prompts/pages/PromptSettingsPage"
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Navigate to="/courses" replace />} />
         <Route path="/courses" element={<CoursesPage />} />

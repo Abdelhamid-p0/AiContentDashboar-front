@@ -38,7 +38,19 @@ const SAMPLE_CORRECTION_JSON = JSON.stringify(
 
 const SAMPLE_OUTPUT_FORMAT = "[OUTPUT_FORMAT inserted by server]";
 
-const TOKEN_GROUPS = [
+type PromptToken = {
+  token: string;
+  label: string;
+  required?: boolean;
+  locked?: boolean;
+};
+
+type PromptTokenGroup = {
+  title: string;
+  tokens: PromptToken[];
+};
+
+const TOKEN_GROUPS: PromptTokenGroup[] = [
   {
     title: "Context variables",
     tokens: [

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0; url=./" />
+    <script>
+      (function () {
+        var path = window.location.pathname;
+        var base = '/AiContentDashboar-front/';
+        if (path.indexOf(base) === 0) {
+          var rest = path.slice(base.length);
+          var search = window.location.search || '';
+          var hash = window.location.hash || '';
+          window.location.replace(base + '#' + rest + search + hash);
+          return;
+        }
+        window.location.replace('./');
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
