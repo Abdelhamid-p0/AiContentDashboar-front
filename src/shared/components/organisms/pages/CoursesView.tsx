@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/shared/components/atoms/Badge";
 import { Button } from "@/shared/components/atoms/Button";
+import { IconButton } from "@/shared/components/atoms/IconButton";
+import { SearchField } from "@/shared/components/atoms/SearchField";
+import { SelectField } from "@/shared/components/atoms/SelectField";
 import {
   DataTable,
   type DataTableColumn,
@@ -109,7 +113,7 @@ export function CoursesView({
         label: "Status",
         width: "12%",
         render: (course) => (
-          <Badge variant={course.active ? "success" : "danger"}>
+          <Badge variant={course.active ? "success" : "danger"} dot>
             {course.active ? "Active" : "Inactive"}
           </Badge>
         ),
@@ -121,12 +125,23 @@ export function CoursesView({
         width: "12%",
         align: "right",
         render: (course) => (
-          <Button
-            variant="ghost"
-            onClick={() => onOpenQuizzes(course.id, course.title)}
-          >
-            View quizzes
-          </Button>
+          <div className="row-actions">
+            <IconButton
+              icon={<Eye size={16} />}
+              label="View quizzes"
+              onClick={() => onOpenQuizzes(course.id, course.title)}
+            />
+            <IconButton
+              icon={<Pencil size={16} />}
+              label="Edit course"
+              disabled
+            />
+            <IconButton
+              icon={<Trash2 size={16} />}
+              label="Delete course"
+              disabled
+            />
+          </div>
         ),
       },
     ],
@@ -137,125 +152,104 @@ export function CoursesView({
     <DashboardShell
       title="Courses"
       subtitle="Explore the course catalog, filter what you need, and jump into the quizzes for any course."
-      actionLabel="Export Excel"
+      actionLabel="Exporter"
       onExport={onExport}
       onToggleSettings={() => setSettingsOpen((current) => !current)}
     >
-      <div className="layout">
-        <div className="toolbar">
-          <div className="toolbar-left">
-            <input
-              className="input"
-              type="search"
-              placeholder="Search a course"
-              value={search}
-              onChange={(event) => onSearchChange(event.target.value)}
-            />
-            <select
-              className="select"
-              value={semester}
-              onChange={(event) =>
-                onSemesterChange(event.target.value as SemesterFilter)
-              }
-            >
-              {semesterOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <select
-              className="select"
-              value={subjectId || "ALL"}
-              onChange={(event) =>
-                onSubjectChange(
-                  event.target.value === "ALL" ? "" : event.target.value,
-                )
-              }
-            >
-              {subjectOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <select
-              className="select"
-              value={levelId || "ALL"}
-              onChange={(event) =>
-                onLevelChange(
-                  event.target.value === "ALL" ? "" : event.target.value,
-                )
-              }
-            >
-              {levelOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <div className="chip-group">
-              {statusOptions.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  className="chip"
-                  data-active={status === option.value}
-                  onClick={() => onStatusChange(option.value)}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="toolbar-right">
-            <Badge variant="neutral">{totalElements} courses</Badge>
-            <Badge variant="success">API /api/v1/courses</Badge>
-            {subjectId ? (
-              <Badge variant="warning">Subject: {selectedSubjectLabel}</Badge>
-            ) : null}
-            {levelId ? (
-              <Badge variant="warning">Level: {selectedLevelLabel}</Badge>
-            ) : null}
-            {semester !== "ALL" ? (
-              <Badge variant="warning">Semester: {semester}</Badge>
-            ) : null}
-          </div>
-        </div>
-
-        {error ? <div className="error-state">{error}</div> : null}
-        {loading ? (
-          <div className="loading-state">Loading courses...</div>
-        ) : (
-          <DataTable
-            columns={columns}
-            data={courses}
-            emptyMessage="No courses match the selected filters."
+      <div className="filters-bar">
+        <div className="filters-group">
+          <SearchField
+            placeholder="Search a course"
+            value={search}
+            onChange={(event) => onSearchChange(event.target.value)}
           />
-        )}
-
-        <div className="page-footer">
-          <div className="pagination-info">
-            Page {page + 1} of {Math.max(totalPages, 1)} - showing up to{" "}
-            {pageSize}
-            items per request
-          </div>
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={onPageChange}
-          />
+          <SelectField
+            value={semester}
+            onChange={(event) =>
+              onSemesterChange(event.target.value as SemesterFilter)
+            }
+          >
+            {semesterOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </SelectField>
+          <SelectField
+            value={subjectId || "ALL"}
+            onChange={(event) =>
+              onSubjectChange(
+                event.target.value === "ALL" ? "" : event.target.value,
+              )
+            }
+          >
+            {subjectOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </SelectField>
+          <SelectField
+            value={levelId || "ALL"}
+            onChange={(event) =>
+              onLevelChange(
+                event.target.value === "ALL" ? "" : event.target.value,
+              )
+            }
+          >
+            {levelOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </SelectField>
+          <SelectField
+            value={status}
+            onChange={(event) =>
+              onStatusChange(event.target.value as CourseStatusFilter)
+            }
+          >
+            {statusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </SelectField>
         </div>
-
-        <div className="page-footer">
-          <div className="pagination-info">Quick actions</div>
-          <div className="toolbar-actions">
-            <Button variant="secondary" onClick={onResetFilters}>
-              Clear filters
-            </Button>
-          </div>
+        <div className="filters-actions">
+          <Button variant="secondary" onClick={onResetFilters}>
+            Clear filters
+          </Button>
+          <Button variant="primary" disabled>
+            Create course
+          </Button>
         </div>
+      </div>
+
+      {error ? <div className="error-state">{error}</div> : null}
+      {loading ? (
+        <div className="loading-state">Loading courses...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={courses}
+          emptyMessage="No courses match the selected filters."
+        />
+      )}
+
+      <div className="table-footer">
+        <div className="pagination-info">
+          Page {page + 1} of {Math.max(totalPages, 1)} · {totalElements} courses
+          {` · ${pageSize} per page`}
+          {subjectId ? ` · Subject: ${selectedSubjectLabel}` : ""}
+          {levelId ? ` · Level: ${selectedLevelLabel}` : ""}
+          {semester !== "ALL" ? ` · Semester: ${semester}` : ""}
+        </div>
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
       </div>
 
       <SettingsDialog

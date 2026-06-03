@@ -23,7 +23,7 @@ export function useQuestionCorrectionChat(
   initial: QuestionCorrectionChatInitial,
 ) {
   const [originalQuestion, setOriginalQuestion] = useState<QuestionApiItem | null>(
-    initial.originalQuestion ?? null,
+    initial.originalQuestion ?? initial.correction?.original_question ?? null,
   );
   const [correctionResponse, setCorrectionResponse] =
     useState<QuestionCorrectionApiResponse | null>(
@@ -36,7 +36,7 @@ export function useQuestionCorrectionChat(
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  const needsInitialFetch = !originalQuestion || !correctionResponse;
+  const needsInitialFetch = !correctionResponse || !originalQuestion;
 
   useEffect(() => {
     if (!questionId || !needsInitialFetch) {
@@ -47,16 +47,28 @@ export function useQuestionCorrectionChat(
     setLoading(true);
     setError(null);
 
-    Promise.all([
-      originalQuestion ? Promise.resolve(originalQuestion) : getQuestionDetails(questionId),
-      correctionResponse
-        ? Promise.resolve(correctionResponse)
-        : getQuestionCorrection(questionId),
-    ])
-      .then(([question, correction]) => {
-        if (!active) return;
-        setOriginalQuestion(question);
+    const correctionPromise = correctionResponse
+      ? Promise.resolve(correctionResponse)
+      : getQuestionCorrection(questionId);
+
+    correctionPromise
+      .then((correction) => {
+        if (!active) return null;
         setCorrectionResponse(correction);
+
+        const original =
+          originalQuestion ?? correction.original_question ?? null;
+
+        if (original) {
+          setOriginalQuestion(original);
+          return null;
+        }
+
+        return getQuestionDetails(questionId).then((question) => {
+          if (!active) return null;
+          setOriginalQuestion(question);
+          return null;
+        });
       })
       .catch((requestError: unknown) => {
         if (!active) return;
@@ -74,12 +86,7 @@ export function useQuestionCorrectionChat(
     return () => {
       active = false;
     };
-  }, [
-    correctionResponse,
-    needsInitialFetch,
-    originalQuestion,
-    questionId,
-  ]);
+  }, [correctionResponse, needsInitialFetch, originalQuestion, questionId]);
 
   const sendMessage = useCallback(
     async (message: string) => {
@@ -105,14 +112,6 @@ export function useQuestionCorrectionChat(
         });
 
         setCorrectionResponse(response);
-        setMessages((current) => [
-          ...current,
-          {
-            id: `assistant-${Date.now()}`,
-            role: "assistant",
-            content: "Correction updated with your instructions.",
-          },
-        ]);
 
         return true;
       } catch (requestError: unknown) {

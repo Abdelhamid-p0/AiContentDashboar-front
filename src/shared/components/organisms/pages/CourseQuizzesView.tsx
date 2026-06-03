@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
-import { Eye } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/shared/components/atoms/Badge";
 import { Button } from "@/shared/components/atoms/Button";
-import { SegmentedControl } from "@/shared/components/molecules/SegmentedControl";
+import { IconButton } from "@/shared/components/atoms/IconButton";
+import { SearchField } from "@/shared/components/atoms/SearchField";
+import { SelectField } from "@/shared/components/atoms/SelectField";
 import {
   DataTable,
   type DataTableColumn,
@@ -15,6 +17,7 @@ import type {
 } from "@/features/quizzes/model/quiz.types";
 
 const quizTypeOptions: Array<{ label: string; value: QuizTypeFilter }> = [
+  { label: "All types", value: "ALL" },
   { label: "Flashcards", value: "FLASHCARD" },
   { label: "Quiz", value: "QUIZ" },
 ];
@@ -47,6 +50,18 @@ export function CourseQuizzesView({
   onBackToCourses,
 }: CourseQuizzesViewProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredQuizzes = useMemo(() => {
+    const normalized = search.trim().toLowerCase();
+    if (!normalized) {
+      return quizzes;
+    }
+
+    return quizzes.filter((quiz) =>
+      quiz.title.toLowerCase().includes(normalized),
+    );
+  }, [quizzes, search]);
 
   const columns = useMemo<DataTableColumn<QuizRow>[]>(
     () => [
@@ -56,7 +71,10 @@ export function CourseQuizzesView({
         label: "Type",
         width: "20%",
         render: (quiz) => (
-          <Badge variant={quiz.type === "FLASHCARD" ? "warning" : "neutral"}>
+          <Badge
+            variant={quiz.type === "FLASHCARD" ? "warning" : "neutral"}
+            dot
+          >
             {quiz.type}
           </Badge>
         ),
@@ -67,13 +85,23 @@ export function CourseQuizzesView({
         width: "10%",
         align: "right",
         render: (quiz) => (
-          <Button
-            variant="ghost"
-            icon={<Eye size={16} />}
-            onClick={() => onOpenQuestions(quiz.id, quiz.title)}
-          >
-            View
-          </Button>
+          <div className="row-actions">
+            <IconButton
+              icon={<Eye size={16} />}
+              label="View questions"
+              onClick={() => onOpenQuestions(quiz.id, quiz.title)}
+            />
+            <IconButton
+              icon={<Pencil size={16} />}
+              label="Edit quiz"
+              disabled
+            />
+            <IconButton
+              icon={<Trash2 size={16} />}
+              label="Delete quiz"
+              disabled
+            />
+          </div>
         ),
       },
     ],
@@ -84,52 +112,64 @@ export function CourseQuizzesView({
     <DashboardShell
       title={courseTitle}
       subtitle="Switch between Flashcards and Quiz to inspect the course structure."
-      actionLabel="Export Excel"
+      actionLabel="Exporter"
       onExport={onExport}
       onToggleSettings={() => setSettingsOpen((current) => !current)}
     >
-      <div className="layout">
-        <div className="toolbar">
-          <div className="toolbar-left">
-            <SegmentedControl
-              options={quizTypeOptions}
-              value={selectedType}
-              onChange={onTypeChange}
-            />
+      <div className="filters-bar">
+        <div className="filters-group">
+          <SearchField
+            placeholder="Search a quiz"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+          <SelectField
+            value={selectedType}
+            onChange={(event) =>
+              onTypeChange(event.target.value as QuizTypeFilter)
+            }
+          >
+            {quizTypeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </SelectField>
+          {selectedType !== "ALL" ? (
             <Button variant="ghost" onClick={onShowAll}>
               Show all
             </Button>
-          </div>
-
-          <div className="toolbar-right">
-            <Badge variant="neutral">{quizzes.length} items</Badge>
-            <Badge variant="warning">Grouped by type</Badge>
-          </div>
+          ) : null}
         </div>
+        <div className="filters-actions">
+          <Button variant="ghost" onClick={onBackToCourses}>
+            Back to courses
+          </Button>
+          <Button variant="primary" disabled>
+            Create quiz
+          </Button>
+        </div>
+      </div>
 
-        {error ? <div className="error-state">{error}</div> : null}
-        {loading ? (
-          <div className="loading-state">Loading quizzes...</div>
-        ) : (
-          <DataTable
-            columns={columns}
-            data={quizzes}
-            emptyMessage="No quizzes match this type filter."
-          />
-        )}
+      {error ? <div className="error-state">{error}</div> : null}
+      {loading ? (
+        <div className="loading-state">Loading quizzes...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filteredQuizzes}
+          emptyMessage="No quizzes match this filter."
+        />
+      )}
 
-        <div className="page-footer">
-          <div className="pagination-info">
-            Filtered view for course <strong>{courseTitle}</strong>
-          </div>
-          <div className="toolbar-actions">
-            <Button variant="ghost" onClick={onBackToCourses}>
-              Back to courses
-            </Button>
-            <Button variant="secondary" onClick={onExport}>
-              Export visible rows
-            </Button>
-          </div>
+      <div className="table-footer">
+        <div className="pagination-info">
+          Showing {filteredQuizzes.length} quizzes for {courseTitle}
+        </div>
+        <div className="filters-actions">
+          <Button variant="secondary" onClick={onExport}>
+            Export visible rows
+          </Button>
         </div>
       </div>
 

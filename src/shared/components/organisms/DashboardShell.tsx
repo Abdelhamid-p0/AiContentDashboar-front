@@ -1,15 +1,20 @@
 import type { ReactNode } from "react";
+
+import logo from "@/../public/favicon.svg";
+
 import {
   BookOpen,
   FileSpreadsheet,
   HelpCircle,
   Layers,
+  Plus,
   Settings,
   SlidersHorizontal,
   Sparkles,
 } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/shared/components/atoms/Button";
+import { IconButton } from "@/shared/components/atoms/IconButton";
 
 type DashboardShellProps = {
   title: string;
@@ -17,6 +22,11 @@ type DashboardShellProps = {
   actionLabel: string;
   onExport?: () => void;
   onToggleSettings?: () => void;
+  primaryActionLabel?: string;
+  onPrimaryAction?: () => void;
+  primaryActionDisabled?: boolean;
+  variant?: "default" | "chat";
+  hideHeader?: boolean;
   children: ReactNode;
 };
 
@@ -26,6 +36,11 @@ export function DashboardShell({
   actionLabel,
   onExport,
   onToggleSettings,
+  primaryActionLabel,
+  onPrimaryAction,
+  primaryActionDisabled,
+  variant = "default",
+  hideHeader = false,
   children,
 }: DashboardShellProps) {
   const navigate = useNavigate();
@@ -81,13 +96,20 @@ export function DashboardShell({
     },
   ];
 
+  const shellClass =
+    variant === "chat" ? "app-shell app-shell-chat" : "app-shell";
+  const cardClass =
+    variant === "chat" ? "page-card page-card-chat" : "page-card";
+  const pageFrameClass =
+    variant === "chat" ? "page-frame page-frame-chat" : "page-frame";
+
   return (
-    <div className="app-shell">
+    <div className={shellClass}>
       <div className="app-layout">
         <aside className="app-sidebar">
           <Link to="/courses" className="sidebar-brand" aria-label="Go home">
             <span className="sidebar-logo">
-              <img src="/favicon.svg" alt="Bewise" />
+              <img src={logo} alt="Bewise" />
             </span>
             <div className="sidebar-copy">
               <span className="sidebar-title">Bewise</span>
@@ -130,38 +152,51 @@ export function DashboardShell({
           </div>
         </aside>
 
-        <div className="app-main">
-          <div className="page-frame section-stack">
-            <header className="topbar">
-              <div className="topbar-left">
-                <span className="topbar-kicker">Bewise AI Workspace</span>
-                <h1 className="hero-title">{title}</h1>
-                <p className="hero-description">{subtitle}</p>
-              </div>
+        <div className="app-frame">
+          <div className="app-main">
+            <div className={pageFrameClass}>
+              <div className={cardClass}>
+                {!hideHeader ? (
+                  <header className="page-header">
+                    <div>
+                      <h1 className="page-title">{title}</h1>
+                      <p className="page-subtitle">{subtitle}</p>
+                    </div>
 
-              <div className="topbar-actions">
-                {onToggleSettings ? (
-                  <Button
-                    variant="ghost"
-                    icon={<Settings size={16} />}
-                    onClick={onToggleSettings}
-                  >
-                    Settings
-                  </Button>
+                    <div className="page-actions">
+                      {onExport ? (
+                        <Button
+                          variant="ghost"
+                          icon={<FileSpreadsheet size={16} />}
+                          onClick={onExport}
+                        >
+                          {actionLabel}
+                        </Button>
+                      ) : null}
+                      {onToggleSettings ? (
+                        <IconButton
+                          icon={<Settings size={16} />}
+                          label="Open settings"
+                          onClick={onToggleSettings}
+                        />
+                      ) : null}
+                      {primaryActionLabel ? (
+                        <Button
+                          variant="primary"
+                          icon={<Plus size={16} />}
+                          onClick={onPrimaryAction}
+                          disabled={primaryActionDisabled || !onPrimaryAction}
+                        >
+                          {primaryActionLabel}
+                        </Button>
+                      ) : null}
+                    </div>
+                  </header>
                 ) : null}
-                {onExport ? (
-                  <Button
-                    variant="secondary"
-                    icon={<FileSpreadsheet size={16} />}
-                    onClick={onExport}
-                  >
-                    {actionLabel}
-                  </Button>
-                ) : null}
-              </div>
-            </header>
 
-            {children}
+                {children}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
-import { Eye } from "lucide-react";
+import { Eye, Pencil, Sparkles, Trash2 } from "lucide-react";
 import { Badge } from "@/shared/components/atoms/Badge";
 import { Button } from "@/shared/components/atoms/Button";
+import { IconButton } from "@/shared/components/atoms/IconButton";
+import { SearchField } from "@/shared/components/atoms/SearchField";
 import {
   DataTable,
   type DataTableColumn,
@@ -9,7 +11,6 @@ import {
 import { DashboardShell } from "@/shared/components/organisms/DashboardShell";
 import { SettingsDialog } from "@/shared/components/organisms/dialogs/SettingsDialog";
 import { QuestionDetailsDialog } from "@/shared/components/organisms/dialogs/QuestionDetailsDialog";
-import { QuestionCorrectionDialog } from "@/shared/components/organisms/dialogs/QuestionCorrectionDialog";
 import type {
   QuestionApiItem,
   QuestionRow,
@@ -23,20 +24,6 @@ type QuestionDetailsDialogState = {
   onClose: () => void;
 };
 
-type QuestionCorrectionDialogState = {
-  open: boolean;
-  loading: boolean;
-  error: string | null;
-  originalQuestion: QuestionApiItem | null;
-  correctedQuestion: QuestionApiItem | null;
-  corrections: string[] | null;
-  explanation: string | null;
-  detectedErrors: string | null;
-  onClose: () => void;
-  onOpenChat: () => void;
-  chatEnabled: boolean;
-};
-
 type QuizQuestionsViewProps = {
   quizId: string;
   quizTitle: string;
@@ -47,9 +34,8 @@ type QuizQuestionsViewProps = {
   onBackToQuizzes: () => void;
   onExport: () => void;
   onOpenDetails: (questionId: string) => void;
-  onOpenCorrection: (questionId: string) => void;
+  onOpenChat: (questionId: string) => void;
   detailsDialog: QuestionDetailsDialogState;
-  correctionDialog: QuestionCorrectionDialogState;
 };
 
 export function QuizQuestionsView({
@@ -62,11 +48,22 @@ export function QuizQuestionsView({
   onBackToQuizzes,
   onExport,
   onOpenDetails,
-  onOpenCorrection,
+  onOpenChat,
   detailsDialog,
-  correctionDialog,
 }: QuizQuestionsViewProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredQuestions = useMemo(() => {
+    const normalized = search.trim().toLowerCase();
+    if (!normalized) {
+      return questions;
+    }
+
+    return questions.filter((question) =>
+      question.question.toLowerCase().includes(normalized),
+    );
+  }, [questions, search]);
 
   const columns = useMemo<DataTableColumn<QuestionRow>[]>(
     () => [
@@ -79,7 +76,11 @@ export function QuizQuestionsView({
         label: "Status",
         width: "10%",
         align: "center",
-        render: () => <Badge variant="neutral">Ready</Badge>,
+        render: () => (
+          <Badge variant="success" dot>
+            Ready
+          </Badge>
+        ),
       },
       {
         key: "actions",
@@ -88,24 +89,31 @@ export function QuizQuestionsView({
         align: "right",
         render: (question) => (
           <div className="row-actions">
-            <Button
-              variant="ghost"
+            <IconButton
               icon={<Eye size={16} />}
+              label="View question"
               onClick={() => onOpenDetails(question.id)}
-            >
-              View
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => onOpenCorrection(question.id)}
-            >
-              Ask AI
-            </Button>
+            />
+            <IconButton
+              icon={<Sparkles size={16} />}
+              label="Ask AI"
+              onClick={() => onOpenChat(question.id)}
+            />
+            <IconButton
+              icon={<Pencil size={16} />}
+              label="Edit question"
+              disabled
+            />
+            <IconButton
+              icon={<Trash2 size={16} />}
+              label="Delete question"
+              disabled
+            />
           </div>
         ),
       },
     ],
-    [onOpenCorrection, onOpenDetails],
+    [onOpenChat, onOpenDetails],
   );
 
   return (
@@ -113,36 +121,54 @@ export function QuizQuestionsView({
       <DashboardShell
         title={quizTitle}
         subtitle="Questions list for the selected quiz. Use View to open complete question details in a popup."
-        actionLabel="Export Excel"
+        actionLabel="Exporter"
         onExport={onExport}
         onToggleSettings={() => setSettingsOpen((current) => !current)}
       >
-        <div className="layout">
-          <div className="toolbar">
-            <div className="toolbar-left">
-              <Badge variant="neutral">{questions.length} questions</Badge>
-              <Badge variant="success">
-                API /api/v1/quizzes/{quizId}/questions
-              </Badge>
-            </div>
-
-            <div className="toolbar-right">
-              <Button variant="ghost" onClick={onBackToQuizzes}>
-                Back to quizzes
-              </Button>
-            </div>
-          </div>
-
-          {error ? <div className="error-state">{error}</div> : null}
-          {loading ? (
-            <div className="loading-state">Loading questions...</div>
-          ) : (
-            <DataTable
-              columns={columns}
-              data={questions}
-              emptyMessage="No questions found for this quiz."
+        <div className="filters-bar">
+          <div className="filters-group">
+            <SearchField
+              placeholder="Search a question"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
             />
-          )}
+            <Badge variant="neutral">
+              {filteredQuestions.length} questions
+            </Badge>
+            <Badge variant="success" dot>
+              API /api/v1/quizzes/{quizId}/questions
+            </Badge>
+          </div>
+          <div className="filters-actions">
+            <Button variant="ghost" onClick={onBackToQuizzes}>
+              Back to quizzes
+            </Button>
+            <Button variant="primary" disabled>
+              Create question
+            </Button>
+          </div>
+        </div>
+
+        {error ? <div className="error-state">{error}</div> : null}
+        {loading ? (
+          <div className="loading-state">Loading questions...</div>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={filteredQuestions}
+            emptyMessage="No questions found for this quiz."
+          />
+        )}
+
+        <div className="table-footer">
+          <div className="pagination-info">
+            Course: {courseTitle} · Quiz: {quizTitle}
+          </div>
+          <div className="filters-actions">
+            <Button variant="secondary" onClick={onExport}>
+              Export visible rows
+            </Button>
+          </div>
         </div>
 
         <SettingsDialog
@@ -164,21 +190,6 @@ export function QuizQuestionsView({
           loading={detailsDialog.loading}
           error={detailsDialog.error}
           onClose={detailsDialog.onClose}
-        />
-      ) : null}
-
-      {correctionDialog.open ? (
-        <QuestionCorrectionDialog
-          originalQuestion={correctionDialog.originalQuestion}
-          correctedQuestion={correctionDialog.correctedQuestion}
-          corrections={correctionDialog.corrections}
-          explanation={correctionDialog.explanation}
-          detectedErrors={correctionDialog.detectedErrors}
-          loading={correctionDialog.loading}
-          error={correctionDialog.error}
-          onClose={correctionDialog.onClose}
-          onOpenChat={correctionDialog.onOpenChat}
-          chatEnabled={correctionDialog.chatEnabled}
         />
       ) : null}
     </>

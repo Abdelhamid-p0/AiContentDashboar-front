@@ -4,6 +4,7 @@ export type QuestionCorrectionApiResponse = {
   corrections: string[]
   explanation: string
   detected_errors: string
+  original_question?: QuestionApiItem
   improved_question: QuestionApiItem
 }
 

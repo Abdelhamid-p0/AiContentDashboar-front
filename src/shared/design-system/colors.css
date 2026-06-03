@@ -1,15 +1,15 @@
 @layer base {
   :root {
-    --primary-100: #e3ccff;
-    --primary-200: #c799ff;
-    --primary-300: #ab66ff;
-    --primary-400: #8f33ff;
-    --primary-500: #7300ff;
-    --primary-600: #5c00cc;
-    --primary-700: #450099;
-    --primary-800: #2e0066;
-    --primary-900: #170033;
-    --primary-1000: #7c2bff;
+    --primary-100: #dff7f4;
+    --primary-200: #b7eee6;
+    --primary-300: #86e1d5;
+    --primary-400: #54d0c2;
+    --primary-500: #24b8aa;
+    --primary-600: #18908a;
+    --primary-700: #126d69;
+    --primary-800: #0c4f4d;
+    --primary-900: #063433;
+    --primary-1000: #39a7ff;
 
     --neutral-50: #f6f6f6;
     --neutral-100: #ffffff;
@@ -23,27 +23,53 @@
     --neutral-900: #1a1a1a;
     --neutral-1000: #626262;
 
-    --secondary-100: #fafaff;
-    --secondary-200: #ccccff;
-    --secondary-300: #9999ff;
-    --secondary-400: #6666ff;
-    --secondary-500: #3333ff;
-    --secondary-600: #0000cc;
-    --secondary-700: #000099;
-    --secondary-800: #000066;
-    --secondary-900: #000033;
+    --secondary-100: #f3f9ff;
+    --secondary-200: #d8efff;
+    --secondary-300: #b3e1ff;
+    --secondary-400: #8fd1ff;
+    --secondary-500: #5fb9ff;
+    --secondary-600: #2f96ff;
+    --secondary-700: #1b71cc;
+    --secondary-800: #125396;
+    --secondary-900: #0b3863;
 
-    --accent-100: #7c2bff;
+    --brand-50: #f6f4ff;
+    --brand-100: #ece8ff;
+    --brand-200: #d8d0ff;
+    --brand-300: #bfb4ff;
+    --brand-400: #9a8bff;
+    --brand-500: #7b6dff;
+    --brand-600: #6a5af7;
+    --brand-700: #5a49e6;
+    --brand-800: #4a3bc9;
+    --brand-900: #392da6;
+
+    --chat-bg: var(--neutral-50);
+    --chat-surface: var(--neutral-100);
+    --chat-surface-muted: var(--secondary-100);
+    --chat-border: var(--neutral-200);
+    --chat-text: var(--neutral-900);
+    --chat-text-muted: var(--neutral-600);
+    --chat-accent: var(--brand-600);
+    --chat-accent-soft: var(--brand-100);
+    --chat-bubble-user: var(--secondary-100);
+    --chat-bubble-ai: var(--neutral-100);
+    --chat-input-bg: var(--neutral-100);
+    --chat-summary-bg: var(--surface-muted);
+    --chat-badge-bg: var(--secondary-200);
+    --chat-shadow: 0 18px 40px rgba(12, 33, 62, 0.08);
+
+    --accent-100: #24b8aa;
 
     --black-100: #000000;
     --black-200: #d9d9d9;
 
-    --blue-100: #dff1ff;
-    --blue-200: #53b1fd26;
-    --blue-300: #53b1fd;
+    --blue-100: #e9f5ff;
+    --blue-200: #d4ecff;
+    --blue-300: #39a7ff;
 
-    --green-100: #d8f7e8;
-    --green-200: #f0feed;
+    --green-100: #dcf7f1;
+    --green-200: #ecfbf7;
 
     --orange-100: #fdb02230;
     --orange-200: #fdb02226;

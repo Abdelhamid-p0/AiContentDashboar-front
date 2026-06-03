@@ -2,6 +2,28 @@
   :root {
     --ds-ui-scale: 0.9;
 
+    --space-1: calc(4px * var(--ds-ui-scale));
+    --space-2: calc(8px * var(--ds-ui-scale));
+    --space-3: calc(12px * var(--ds-ui-scale));
+    --space-4: calc(16px * var(--ds-ui-scale));
+    --space-5: calc(20px * var(--ds-ui-scale));
+    --space-6: calc(24px * var(--ds-ui-scale));
+    --space-7: calc(28px * var(--ds-ui-scale));
+    --space-8: calc(32px * var(--ds-ui-scale));
+
+    --control-height: calc(38px * var(--ds-ui-scale));
+    --control-height-sm: calc(32px * var(--ds-ui-scale));
+    --control-pad-x: calc(16px * var(--ds-ui-scale));
+    --control-icon: calc(16px * var(--ds-ui-scale));
+    --page-max-width: calc(1200px * var(--ds-ui-scale));
+
+    --chat-max-width: calc(980px * var(--ds-ui-scale));
+    --chat-min-height: calc(520px * var(--ds-ui-scale));
+    --chat-input-min-h: calc(110px * var(--ds-ui-scale));
+    --chat-radius: calc(18px * var(--ds-ui-scale));
+    --chat-card-min: calc(320px * var(--ds-ui-scale));
+    --chat-bubble-max: 80%;
+
     --ds-dim-dialog-max-h: 90dvh;
     --ds-dim-search-min-w: calc(5rem * var(--ds-ui-scale));
     --ds-dim-search-max-w: calc(8.75rem * var(--ds-ui-scale));

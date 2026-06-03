@@ -35,55 +35,24 @@ export function QuizQuestionsPage() {
     [questions],
   );
 
-  const {
-    details,
-    correction,
-    openDetails,
-    closeDetails,
-    openCorrection,
-    closeCorrection,
-  } = useQuestionDialogs();
+  const { details, openDetails, closeDetails } = useQuestionDialogs();
 
-  const chatEnabled = Boolean(
-    correction.questionId &&
-    correction.originalQuestion &&
-    correction.correctionResponse &&
-    !correction.loading &&
-    !correction.error,
-  );
-
-  const openChat = useCallback(() => {
-    if (
-      !correction.questionId ||
-      !correction.correctionResponse ||
-      !correction.originalQuestion
-    ) {
-      return;
-    }
-
-    navigate(
-      `/courses/${courseId}/quizzes/${quizId}/questions/${correction.questionId}/chat`,
-      {
-        state: {
-          courseId,
-          courseTitle,
-          quizId,
-          quizTitle,
-          originalQuestion: correction.originalQuestion,
-          correction: correction.correctionResponse,
+  const openChat = useCallback(
+    (questionId: string) => {
+      navigate(
+        `/courses/${courseId}/quizzes/${quizId}/questions/${questionId}/chat`,
+        {
+          state: {
+            courseId,
+            courseTitle,
+            quizId,
+            quizTitle,
+          },
         },
-      },
-    );
-  }, [
-    correction.correctionResponse,
-    correction.originalQuestion,
-    correction.questionId,
-    courseId,
-    courseTitle,
-    navigate,
-    quizId,
-    quizTitle,
-  ]);
+      );
+    },
+    [courseId, courseTitle, navigate, quizId, quizTitle],
+  );
 
   return (
     <QuizQuestionsView
@@ -102,26 +71,13 @@ export function QuizQuestionsPage() {
         exportRowsToExcel(exportRows, "Questions", `questions-${quizId}`)
       }
       onOpenDetails={openDetails}
-      onOpenCorrection={openCorrection}
+      onOpenChat={openChat}
       detailsDialog={{
         open: details.open,
         loading: details.loading,
         error: details.error,
         question: details.question,
         onClose: closeDetails,
-      }}
-      correctionDialog={{
-        open: correction.open,
-        loading: correction.loading,
-        error: correction.error,
-        originalQuestion: correction.originalQuestion,
-        correctedQuestion: correction.correctedQuestion,
-        corrections: correction.corrections,
-        explanation: correction.explanation,
-        detectedErrors: correction.detectedErrors,
-        onClose: closeCorrection,
-        onOpenChat: openChat,
-        chatEnabled,
       }}
     />
   );
