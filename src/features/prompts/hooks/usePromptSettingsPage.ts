@@ -13,18 +13,17 @@ import type {
   PromptSettingsFormState,
 } from '../model/prompt-settings.types'
 
-const REQUIRED_SYSTEM_TOKENS = ['{{pedagogical_rules}}']
-const REQUIRED_CORRECTION_TOKENS = ['{{question_json}}', '{{output_format}}']
+const REQUIRED_SYSTEM_TOKENS = ['{{general_rules}}']
+const REQUIRED_CORRECTION_TOKENS = ['{{question_json}}']
 const REQUIRED_CHAT_TOKENS = [
   '{{instruction}}',
   '{{previous_correction_json}}',
   '{{question_json}}',
-  '{{output_format}}',
 ]
 
 const EMPTY_FORM: PromptSettingsFormState = {
   systemMessageTemplate: '',
-  pedagogicalRules: '',
+  generalRules: '',
   correctionPromptTemplate: '',
   chatPromptTemplate: '',
 }
@@ -83,7 +82,7 @@ export function usePromptSettingsPage() {
     if (!settings) return false
     return (
       form.systemMessageTemplate !== settings.system_message_template ||
-      form.pedagogicalRules !== settings.pedagogical_rules ||
+      form.generalRules !== settings.general_rules ||
       form.correctionPromptTemplate !== settings.correction_prompt_template ||
       form.chatPromptTemplate !== settings.chat_prompt_template
     )

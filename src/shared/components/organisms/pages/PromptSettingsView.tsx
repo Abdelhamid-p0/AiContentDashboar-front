@@ -85,8 +85,8 @@ const STRINGS = {
     systemTitle: "System message template",
     systemSubtitle:
       "Sets the AI role, course context, and rule injection point.",
-    pedagogicalTitle: "Pedagogical rules",
-    pedagogicalSubtitle: "Keep one rule per line for readable AI guidance.",
+    generalRulesTitle: "General rules",
+    generalRulesSubtitle: "Keep one rule per line for readable AI guidance.",
     correctionTitle: "Correction prompt",
     correctionSubtitle:
       "Defines the main task instructions for question correction.",
@@ -108,7 +108,7 @@ const STRINGS = {
     tokenRequired: "Required",
     ok: "OK",
     placeholderSystem: "Add the system message template here.",
-    placeholderPedagogical: "- Rule 1\n- Rule 2",
+    placeholderGeneral: "- Rule 1\n- Rule 2",
     placeholderCorrection: "Add the correction prompt template here.",
     placeholderChat: "Add the chat prompt template here.",
     tokenGroupContext: "Context variables",
@@ -117,7 +117,7 @@ const STRINGS = {
     tokenSubject: "Subject",
     tokenDomain: "Domain",
     tokenSemester: "Semester",
-    tokenRules: "Pedagogical rules",
+    tokenRules: "General rules",
     tokenQuestionJson: "Question JSON",
     tokenInstruction: "User instruction",
     tokenPrevious: "Previous correction",
@@ -152,8 +152,8 @@ const STRINGS = {
     systemTitle: "Template message systeme",
     systemSubtitle:
       "Definit le role IA, le contexte cours, et le point d'injection des regles.",
-    pedagogicalTitle: "Regles pedagogiques",
-    pedagogicalSubtitle: "Une regle par ligne pour une lecture claire.",
+    generalRulesTitle: "Regles generales",
+    generalRulesSubtitle: "Une regle par ligne pour une lecture claire.",
     correctionTitle: "Prompt de correction",
     correctionSubtitle:
       "Definit les instructions principales pour corriger la question.",
@@ -176,7 +176,7 @@ const STRINGS = {
     tokenRequired: "Requis",
     ok: "OK",
     placeholderSystem: "Ajoutez le template du message systeme ici.",
-    placeholderPedagogical: "- Regle 1\n- Regle 2",
+    placeholderGeneral: "- Regle 1\n- Regle 2",
     placeholderCorrection: "Ajoutez le template du prompt de correction ici.",
     placeholderChat: "Ajoutez le template du prompt de chat ici.",
     tokenGroupContext: "Variables de contexte",
@@ -185,7 +185,7 @@ const STRINGS = {
     tokenSubject: "Matiere",
     tokenDomain: "Domaine",
     tokenSemester: "Semestre",
-    tokenRules: "Regles pedagogiques",
+    tokenRules: "Regles generales",
     tokenQuestionJson: "Question JSON",
     tokenInstruction: "Instruction utilisateur",
     tokenPrevious: "Correction precedente",
@@ -219,8 +219,8 @@ const STRINGS = {
     systemTitle: "قالب رسالة النظام",
     systemSubtitle:
       "يحدد دور الذكاء الاصطناعي وسياق المقرر ونقطة ادراج القواعد.",
-    pedagogicalTitle: "قواعد تعليمية",
-    pedagogicalSubtitle: "قاعدة واحدة لكل سطر لقراءة واضحة.",
+    generalRulesTitle: "قواعد تعليمية",
+    generalRulesSubtitle: "قاعدة واحدة لكل سطر لقراءة واضحة.",
     correctionTitle: "تعليمات التصحيح",
     correctionSubtitle: "تعليمات المهمة الاساسية لتصحيح السؤال.",
     chatTitle: "تعليمات الدردشة",
@@ -241,7 +241,7 @@ const STRINGS = {
     tokenRequired: "مطلوب",
     ok: "حسنا",
     placeholderSystem: "اضف قالب رسالة النظام هنا.",
-    placeholderPedagogical: "- قاعدة 1\n- قاعدة 2",
+    placeholderGeneral: "- قاعدة 1\n- قاعدة 2",
     placeholderCorrection: "اضف قالب تعليمات التصحيح هنا.",
     placeholderChat: "اضف قالب تعليمات الدردشة هنا.",
     tokenGroupContext: "متغيرات السياق",
@@ -308,7 +308,7 @@ type MissingTokens = {
 
 type PromptSettingsViewProps = {
   systemMessageTemplate: string;
-  pedagogicalRules: string;
+  generalRules: string;
   correctionPromptTemplate: string;
   chatPromptTemplate: string;
   updatedAt: string | null;
@@ -321,7 +321,7 @@ type PromptSettingsViewProps = {
   saveDisabled: boolean;
   missingTokens: MissingTokens;
   onSystemMessageChange: (value: string) => void;
-  onPedagogicalRulesChange: (value: string) => void;
+  onGeneralRulesChange: (value: string) => void;
   onCorrectionPromptChange: (value: string) => void;
   onChatPromptChange: (value: string) => void;
   onSave: () => void;
@@ -339,7 +339,7 @@ function renderTemplate(template: string, tokens: Record<string, string>) {
 
 export function PromptSettingsView({
   systemMessageTemplate,
-  pedagogicalRules,
+  generalRules,
   correctionPromptTemplate,
   chatPromptTemplate,
   updatedAt,
@@ -352,7 +352,7 @@ export function PromptSettingsView({
   saveDisabled,
   missingTokens,
   onSystemMessageChange,
-  onPedagogicalRulesChange,
+  onGeneralRulesChange,
   onCorrectionPromptChange,
   onChatPromptChange,
   onSave,
@@ -369,8 +369,7 @@ export function PromptSettingsView({
       subject: "Mathematics",
       domain: "Algebra",
       semester: "S1",
-      pedagogical_rules:
-        pedagogicalRules || "- Add your pedagogical rules here",
+      general_rules: generalRules || "- Add your general rules here",
       question_json: SAMPLE_QUESTION_JSON,
       instruction: "Simplify the question for younger students.",
       previous_correction_json: SAMPLE_CORRECTION_JSON,
@@ -386,7 +385,7 @@ export function PromptSettingsView({
     systemMessageTemplate,
     correctionPromptTemplate,
     chatPromptTemplate,
-    pedagogicalRules,
+    generalRules,
   ]);
 
   const lastUpdatedLabel = useMemo(() => {
@@ -511,21 +510,21 @@ export function PromptSettingsView({
             <section className="prompt-card">
               <div className="prompt-card-header">
                 <div>
-                  <h3 className="prompt-card-title">{copy.pedagogicalTitle}</h3>
+                  <h3 className="prompt-card-title">
+                    {copy.generalRulesTitle}
+                  </h3>
                   <p className="prompt-card-subtitle">
-                    {copy.pedagogicalSubtitle}
+                    {copy.generalRulesSubtitle}
                   </p>
                 </div>
-                <Badge variant="neutral">{"{{pedagogical_rules}}"}</Badge>
+                <Badge variant="neutral">{"{{general_rules}}"}</Badge>
               </div>
               <textarea
                 className="prompt-textarea prompt-textarea-short"
-                value={pedagogicalRules}
-                onChange={(event) =>
-                  onPedagogicalRulesChange(event.target.value)
-                }
+                value={generalRules}
+                onChange={(event) => onGeneralRulesChange(event.target.value)}
                 rows={8}
-                placeholder={copy.placeholderPedagogical}
+                placeholder={copy.placeholderGeneral}
                 disabled={loading}
               />
             </section>

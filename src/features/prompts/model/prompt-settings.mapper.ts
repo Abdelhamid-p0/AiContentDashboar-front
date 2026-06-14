@@ -9,7 +9,7 @@ export function mapPromptSettingsToForm(
 ): PromptSettingsFormState {
   return {
     systemMessageTemplate: settings.system_message_template,
-    pedagogicalRules: settings.pedagogical_rules,
+    generalRules: settings.general_rules,
     correctionPromptTemplate: settings.correction_prompt_template,
     chatPromptTemplate: settings.chat_prompt_template,
   }
@@ -20,7 +20,7 @@ export function mapFormToUpdateRequest(
 ): PromptSettingsUpdateRequest {
   return {
     system_message_template: form.systemMessageTemplate,
-    pedagogical_rules: form.pedagogicalRules,
+    general_rules: form.generalRules,
     correction_prompt_template: form.correctionPromptTemplate,
     chat_prompt_template: form.chatPromptTemplate,
   }

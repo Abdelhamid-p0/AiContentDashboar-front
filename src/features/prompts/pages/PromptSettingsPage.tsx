@@ -21,7 +21,7 @@ export function PromptSettingsPage() {
   return (
     <PromptSettingsView
       systemMessageTemplate={form.systemMessageTemplate}
-      pedagogicalRules={form.pedagogicalRules}
+      generalRules={form.generalRules}
       correctionPromptTemplate={form.correctionPromptTemplate}
       chatPromptTemplate={form.chatPromptTemplate}
       updatedAt={settings?.updated_at ?? null}
@@ -36,8 +36,8 @@ export function PromptSettingsPage() {
       onSystemMessageChange={(value) =>
         setForm((current) => ({ ...current, systemMessageTemplate: value }))
       }
-      onPedagogicalRulesChange={(value) =>
-        setForm((current) => ({ ...current, pedagogicalRules: value }))
+      onGeneralRulesChange={(value) =>
+        setForm((current) => ({ ...current, generalRules: value }))
       }
       onCorrectionPromptChange={(value) =>
         setForm((current) => ({ ...current, correctionPromptTemplate: value }))
