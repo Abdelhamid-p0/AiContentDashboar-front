@@ -3,6 +3,7 @@ import {
   getQuestionCorrection,
   getQuestionDetails,
   postQuestionCorrectionChat,
+  postQuestionCorrectionFeedback,
 } from "@/features/questions/api/questions.api";
 import type { QuestionCorrectionApiResponse } from "@/features/questions/model/question-correction.types";
 import type { QuestionApiItem } from "@/features/questions/model/question.types";
@@ -35,6 +36,11 @@ export function useQuestionCorrectionChat(
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [feedbackRating, setFeedbackRating] = useState<number | null>(null);
+  const [feedbackComment, setFeedbackComment] = useState("");
+  const [feedbackSending, setFeedbackSending] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
   const needsInitialFetch = !correctionResponse || !originalQuestion;
 
@@ -88,6 +94,13 @@ export function useQuestionCorrectionChat(
     };
   }, [correctionResponse, needsInitialFetch, originalQuestion, questionId]);
 
+  useEffect(() => {
+    setFeedbackRating(null);
+    setFeedbackComment("");
+    setFeedbackSubmitted(false);
+    setFeedbackError(null);
+  }, [correctionResponse]);
+
   const sendMessage = useCallback(
     async (message: string) => {
       const trimmed = message.trim();
@@ -128,6 +141,35 @@ export function useQuestionCorrectionChat(
     [correctionResponse, questionId],
   );
 
+  const submitFeedback = useCallback(async () => {
+    if (!questionId || !correctionResponse || feedbackRating == null) {
+      return false;
+    }
+
+    setFeedbackSending(true);
+    setFeedbackError(null);
+
+    try {
+      await postQuestionCorrectionFeedback(questionId, {
+        rating: feedbackRating,
+        comment: feedbackComment.trim(),
+        correction: correctionResponse,
+      });
+
+      setFeedbackSubmitted(true);
+      return true;
+    } catch (requestError: unknown) {
+      setFeedbackError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Unable to submit correction feedback",
+      );
+      return false;
+    } finally {
+      setFeedbackSending(false);
+    }
+  }, [correctionResponse, feedbackComment, feedbackRating, questionId]);
+
   return {
     originalQuestion,
     correctionResponse,
@@ -136,5 +178,13 @@ export function useQuestionCorrectionChat(
     error,
     messages,
     sendMessage,
+    feedbackRating,
+    feedbackComment,
+    feedbackSending,
+    feedbackSubmitted,
+    feedbackError,
+    setFeedbackRating,
+    setFeedbackComment,
+    submitFeedback,
   };
 }

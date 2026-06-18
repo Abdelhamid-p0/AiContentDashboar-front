@@ -3,6 +3,8 @@ import type { QuestionApiItem, QuestionsApiResponse } from '../model/question.ty
 import type {
   QuestionCorrectionApiResponse,
   QuestionCorrectionChatRequest,
+  QuestionCorrectionFeedbackRequest,
+  QuestionCorrectionFeedbackResponse,
 } from '../model/question-correction.types'
 
 export async function getQuizQuestions(quizId: string): Promise<QuestionsApiResponse> {
@@ -25,6 +27,22 @@ export async function postQuestionCorrectionChat(
 ): Promise<QuestionCorrectionApiResponse> {
   return fetchJson<QuestionCorrectionApiResponse>(
     `/v1/questions/${questionId}/correct/chat`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    },
+  )
+}
+
+export async function postQuestionCorrectionFeedback(
+  questionId: string,
+  payload: QuestionCorrectionFeedbackRequest,
+): Promise<QuestionCorrectionFeedbackResponse> {
+  return fetchJson<QuestionCorrectionFeedbackResponse>(
+    `/v1/questions/${questionId}/correct/feedback`,
     {
       method: 'POST',
       headers: {

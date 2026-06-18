@@ -35,6 +35,14 @@ export function QuestionCorrectionChatPage() {
     error,
     messages,
     sendMessage,
+    feedbackRating,
+    feedbackComment,
+    feedbackSending,
+    feedbackSubmitted,
+    feedbackError,
+    setFeedbackRating,
+    setFeedbackComment,
+    submitFeedback,
   } = useQuestionCorrectionChat(questionId, {
     originalQuestion: state?.originalQuestion ?? null,
     correction: state?.correction ?? null,
@@ -72,6 +80,8 @@ export function QuestionCorrectionChatPage() {
       corrections={correctionResponse?.corrections ?? null}
       explanation={correctionResponse?.explanation ?? null}
       detectedErrors={correctionResponse?.detected_errors ?? null}
+      ragContext={correctionResponse?.rag_context ?? null}
+      correctionResponse={correctionResponse}
       loading={loading}
       error={error}
       messages={messages}
@@ -80,6 +90,14 @@ export function QuestionCorrectionChatPage() {
       sendDisabled={sendDisabled}
       onMessageChange={setMessage}
       onSendMessage={handleSend}
+      feedbackRating={feedbackRating}
+      feedbackComment={feedbackComment}
+      feedbackSending={feedbackSending}
+      feedbackSubmitted={feedbackSubmitted}
+      feedbackError={feedbackError}
+      onFeedbackRatingChange={setFeedbackRating}
+      onFeedbackCommentChange={setFeedbackComment}
+      onSubmitFeedback={submitFeedback}
       onBack={handleBack}
     />
   );

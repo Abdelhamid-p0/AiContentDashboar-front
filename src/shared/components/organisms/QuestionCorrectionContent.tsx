@@ -16,6 +16,10 @@ function QuestionCard({
   title: string;
   question: QuestionApiItem | null;
 }) {
+  const subQuestions = Array.isArray(question?.sub_questions)
+    ? question.sub_questions
+    : [];
+
   return (
     <div className="compare-card">
       <div className="compare-card-head">
@@ -68,10 +72,10 @@ function QuestionCard({
           <div className="modal-field">
             <span className="modal-label">Sub-questions et reponses</span>
             <div className="modal-subquestions">
-              {question.sub_questions.length === 0 ? (
+              {subQuestions.length === 0 ? (
                 <p className="modal-text">No sub-questions.</p>
               ) : (
-                question.sub_questions.map((subQuestion) => (
+                subQuestions.map((subQuestion) => (
                   <div key={subQuestion.id} className="modal-subquestion-card">
                     <div className="modal-subquestion-head">
                       <strong>
@@ -82,7 +86,10 @@ function QuestionCard({
                       </strong>
                     </div>
                     <div className="modal-answer-list">
-                      {subQuestion.answers.map((answer) => (
+                      {(Array.isArray(subQuestion.answers)
+                        ? subQuestion.answers
+                        : []
+                      ).map((answer) => (
                         <div key={answer.id} className="modal-answer-item">
                           <Badge
                             variant={answer.is_right ? "success" : "neutral"}
