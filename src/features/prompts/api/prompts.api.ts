@@ -1,10 +1,8 @@
-import { fetchJson } from '@/shared/lib/http'
+import { API_BASE_URL, fetchJson } from '@/shared/lib/http'
 import type {
   PromptSettingsApiResponse,
   PromptSettingsUpdateRequest,
 } from '../model/prompt-settings.types'
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api'
 
 export async function getPromptSettings(): Promise<PromptSettingsApiResponse> {
   return fetchJson<PromptSettingsApiResponse>('/v1/prompt-settings')
