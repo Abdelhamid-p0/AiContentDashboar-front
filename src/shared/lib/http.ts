@@ -1,6 +1,12 @@
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ??
-  'https://aicontentdashboar-backend-production-eee7.up.railway.app/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+if (!API_BASE_URL) {
+  throw new Error(
+    'VITE_API_BASE_URL is not defined. Set it in your environment (e.g. .env) before building.',
+  )
+}
+
+export { API_BASE_URL }
 
 export async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
