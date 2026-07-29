@@ -4,6 +4,7 @@ import logo from "@/../public/favicon.svg";
 
 import {
   BookOpen,
+  Bot,
   FileSpreadsheet,
   HelpCircle,
   Layers,
@@ -47,15 +48,17 @@ export function DashboardShell({
   const { pathname } = useLocation();
   const { courseId, quizId, questionId } = useParams();
 
-  const activeSection = pathname.includes("/prompts")
-    ? "prompts"
-    : pathname.includes("/chat")
-      ? "chat"
-      : pathname.includes("/questions")
-        ? "questions"
-        : pathname.includes("/quizzes")
-          ? "quizzes"
-          : "courses";
+  const activeSection = pathname.includes("/assistant")
+    ? "assistant"
+    : pathname.includes("/prompts")
+      ? "prompts"
+      : pathname.includes("/chat")
+        ? "chat"
+        : pathname.includes("/questions")
+          ? "questions"
+          : pathname.includes("/quizzes")
+            ? "quizzes"
+            : "courses";
 
   const navItems = [
     {
@@ -93,6 +96,12 @@ export function DashboardShell({
       label: "Prompts",
       icon: SlidersHorizontal,
       to: "/prompts",
+    },
+    {
+      id: "assistant",
+      label: "Assistant",
+      icon: Bot,
+      to: "/assistant",
     },
   ];
 

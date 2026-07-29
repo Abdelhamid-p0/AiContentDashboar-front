@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QuizQuestionsView } from "@/shared/components/organisms";
 import { exportRowsToExcel } from "@/shared/lib/excel";
+import { QuizQuestionsView } from "../components";
 import { useQuizQuestionsPage } from "../hooks/useQuizQuestionsPage";
 import { useQuestionDialogs } from "../hooks/useQuestionDialogs";
 

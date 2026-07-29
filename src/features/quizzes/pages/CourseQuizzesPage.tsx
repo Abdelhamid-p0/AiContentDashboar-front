@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { CourseQuizzesView } from "@/shared/components/organisms";
 import { exportRowsToExcel } from "@/shared/lib/excel";
+import { CourseQuizzesView } from "../components";
 import { useCourseQuizzesPage } from "../hooks/useCourseQuizzesPage";
 
 type CourseLocationState = {

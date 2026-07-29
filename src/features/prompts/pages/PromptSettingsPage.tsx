@@ -1,4 +1,4 @@
-import { PromptSettingsView } from "@/shared/components/organisms";
+import { PromptSettingsView } from "../components";
 import { usePromptSettingsPage } from "../hooks/usePromptSettingsPage";
 
 export function PromptSettingsPage() {

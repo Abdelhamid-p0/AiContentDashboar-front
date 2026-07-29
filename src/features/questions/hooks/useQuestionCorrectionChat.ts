@@ -5,14 +5,9 @@ import {
   postQuestionCorrectionChat,
   postQuestionCorrectionFeedback,
 } from "@/features/questions/api/questions.api";
+import type { ChatMessage } from "@/features/questions/model/question-correction-chat.types";
 import type { QuestionCorrectionApiResponse } from "@/features/questions/model/question-correction.types";
 import type { QuestionApiItem } from "@/features/questions/model/question.types";
-
-type ChatMessage = {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-};
 
 type QuestionCorrectionChatInitial = {
   originalQuestion?: QuestionApiItem | null;

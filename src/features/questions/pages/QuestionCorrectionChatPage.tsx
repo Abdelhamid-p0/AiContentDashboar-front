@@ -1,18 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QuestionCorrectionChatView } from "@/shared/components/organisms";
+import { QuestionCorrectionChatView } from "../components";
 import { useQuestionCorrectionChat } from "../hooks/useQuestionCorrectionChat";
-import type { QuestionCorrectionApiResponse } from "../model/question-correction.types";
-import type { QuestionApiItem } from "../model/question.types";
-
-type CorrectionChatLocationState = {
-  courseId?: string;
-  courseTitle?: string;
-  quizId?: string;
-  quizTitle?: string;
-  originalQuestion?: QuestionApiItem;
-  correction?: QuestionCorrectionApiResponse;
-};
+import type { CorrectionChatLocationState } from "../model/question-correction-chat.types";
 
 export function QuestionCorrectionChatPage() {
   const navigate = useNavigate();

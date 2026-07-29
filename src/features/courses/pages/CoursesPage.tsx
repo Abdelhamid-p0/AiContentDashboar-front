@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { CoursesView } from "@/shared/components/organisms";
 import { exportRowsToExcel } from "@/shared/lib/excel";
+import { CoursesView } from "../components";
 import { useCoursesPage } from "../hooks/useCoursesPage";
 
 export function CoursesPage() {
